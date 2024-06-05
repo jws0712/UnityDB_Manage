@@ -22,9 +22,10 @@ public class GameManager : MonoBehaviour
     public TextAsset ItemDatabase;
     public List<Item> AllItemList, MyItemList, CurItemList;
     public string curType = "Character";
-    public GameObject[] Slot;
-    public Image[] TabImage;
+    public GameObject[] Slot, UsingImage;
+    public Image[] TabImage, ItemImage;
     public Sprite TabIdleSprite, TabSelectSprite;
+    public Sprite[] ItemSprite; 
     void Start()
     {
         string[] line = ItemDatabase.text.Substring(0, ItemDatabase.text.Length - 1).Split('\n');
@@ -64,8 +65,16 @@ public class GameManager : MonoBehaviour
 
         for(int i = 0;i < Slot.Length;i++)
         {
-            Slot[i].SetActive(i < CurItemList.Count);
-            Slot[i].GetComponentInChildren<Text>().text = i < CurItemList.Count ? CurItemList[i].Name + "/" + CurItemList[i].isUsing : " ";
+            bool isExist = i < CurItemList.Count;
+
+            Slot[i].SetActive(isExist);
+            Slot[i].GetComponentInChildren<Text>().text = isExist ? CurItemList[i].Name : " " ;
+
+            if (isExist)
+            {
+                ItemImage[i].sprite = ItemSprite[AllItemList.FindIndex(x => x.Name == CurItemList[i].Name)];
+                UsingImage[i].SetActive(CurItemList[i].isUsing);
+            }
         }
 
         int tabNum = 0;
@@ -78,6 +87,16 @@ public class GameManager : MonoBehaviour
         {
             TabImage[i].sprite = i == tabNum ? TabSelectSprite : TabIdleSprite;
         }
+    }
+
+    public void PointerEenter(int slotNum)
+    {
+        print(slotNum + "½½·Ô µå·¯¿È");
+    }
+
+    public void PointerExit(int slotNum)
+    {
+        print(slotNum + "½½·Ô ³ª°¨");
     }
 
     void Save()
