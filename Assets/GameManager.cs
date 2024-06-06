@@ -25,7 +25,10 @@ public class GameManager : MonoBehaviour
     public GameObject[] Slot, UsingImage;
     public Image[] TabImage, ItemImage;
     public Sprite TabIdleSprite, TabSelectSprite;
-    public Sprite[] ItemSprite; 
+    public Sprite[] ItemSprite;
+    public GameObject ExpainPanel;
+    public RectTransform CanvasRect;
+    IEnumerator PointerCoroutine;
     void Start()
     {
         string[] line = ItemDatabase.text.Substring(0, ItemDatabase.text.Length - 1).Split('\n');
@@ -37,6 +40,12 @@ public class GameManager : MonoBehaviour
         }
 
         Load();
+    }
+
+    void Update()
+    {
+        RectTransformUtility.ScreenPointToLocalPointInRectangle(CanvasRect, Input.mousePosition, Camera.main, out Vector2 anchoredPos);
+        ExpainPanel.GetComponent<RectTransform>().anchoredPosition = anchoredPos + new Vector2(-180f, -165f);
     }
 
     public void SlotClick(int slotNum)
@@ -89,18 +98,28 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public void PointerEenter(int slotNum) => StartCoroutine(PointerEnterDelay(slotNum));
+    public void PointerEenter(int slotNum)
+    {
+        PointerCoroutine = PointerEnterDelay(slotNum);
+        StartCoroutine(PointerCoroutine);
+
+        ExpainPanel.GetComponentInChildren<Text>().text = CurItemList[slotNum].Name;
+        ExpainPanel.transform.GetChild(2).GetComponent<Image>().sprite = Slot[slotNum].transform.GetChild(1).GetComponent<Image>().sprite;
+        ExpainPanel.transform.GetChild(3).GetComponent<Text>().text = CurItemList[slotNum].Number + "°³";
+        ExpainPanel.transform.GetChild(4).GetComponent<Text>().text = CurItemList[slotNum].Explain;
+    }
 
     IEnumerator PointerEnterDelay(int slotNum)
     {
         yield return new WaitForSeconds(0.5f);
-        print(slotNum + "½½·Ô µé¾î¿È");
+        ExpainPanel.gameObject.SetActive(true);
 
     }
 
     public void PointerExit(int slotNum)
     {
-        print(slotNum + "½½·Ô ³ª°¨");
+        StopCoroutine(PointerCoroutine);
+        ExpainPanel.gameObject.SetActive(false);
     }
 
     void Save()
