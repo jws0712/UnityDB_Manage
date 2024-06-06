@@ -89,9 +89,13 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public void PointerEenter(int slotNum)
+    public void PointerEenter(int slotNum) => StartCoroutine(PointerEnterDelay(slotNum));
+
+    IEnumerator PointerEnterDelay(int slotNum)
     {
-        print(slotNum + "½½·Ô µå·¯¿È");
+        yield return new WaitForSeconds(0.5f);
+        print(slotNum + "½½·Ô µé¾î¿È");
+
     }
 
     public void PointerExit(int slotNum)
