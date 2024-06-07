@@ -56,6 +56,7 @@ public class GameManager : MonoBehaviour
     public void GetItemClick()
     {
         Item curItem = MyItemList.Find(x => x.Name == ItemNameInput.text);
+        ItemNumberInput.text = ItemNumberInput.text == "" ? "1" : ItemNumberInput.text;
         if(curItem != null)
         {
             curItem.Number = (int.Parse(curItem.Number) + int.Parse(ItemNumberInput.text)).ToString();
@@ -77,7 +78,7 @@ public class GameManager : MonoBehaviour
         Item curItem = MyItemList.Find(x => x.Name == ItemNameInput.text);
         if(curItem != null )
         {
-            int curNumber = int.Parse(curItem.Number) - int.Parse(ItemNumberInput.text);
+            int curNumber = int.Parse(curItem.Number) - int.Parse(ItemNumberInput.text == "" ? "1" : ItemNumberInput.text);
 
             if(curNumber <= 0)
             {
