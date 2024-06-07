@@ -28,7 +28,9 @@ public class GameManager : MonoBehaviour
     public Sprite[] ItemSprite;
     public GameObject ExpainPanel;
     public RectTransform CanvasRect;
+    public InputField ItemNameInput, ItemNumberInput;
     IEnumerator PointerCoroutine;
+    RectTransform ExplainRect;
     void Start()
     {
         string[] line = ItemDatabase.text.Substring(0, ItemDatabase.text.Length - 1).Split('\n');
@@ -40,12 +42,52 @@ public class GameManager : MonoBehaviour
         }
 
         Load();
+
+        ExplainRect = ExpainPanel.GetComponent<RectTransform>();
     }
 
     void Update()
     {
         RectTransformUtility.ScreenPointToLocalPointInRectangle(CanvasRect, Input.mousePosition, Camera.main, out Vector2 anchoredPos);
         ExpainPanel.GetComponent<RectTransform>().anchoredPosition = anchoredPos + new Vector2(-180f, -165f);
+    }
+
+    public void GetItemClick()
+    {
+        Item curItem = MyItemList.Find(x => x.Name == ItemNameInput.text);
+        if(curItem != null)
+        {
+            curItem.Number = (int.Parse(curItem.Number) + int.Parse(ItemNumberInput.text)).ToString();
+        }
+        else
+        {
+            Item curAllItem = AllItemList.Find(x => x.Name == ItemNameInput.text);
+            if(curAllItem != null)
+            {
+                curAllItem.Number = ItemNumberInput.text;
+                MyItemList.Add(curAllItem);
+            }
+        }
+        Save();
+    }
+
+    public void RemoveItemClick()
+    {
+        Item curItem = MyItemList.Find(x => x.Name == ItemNameInput.text);
+        if(curItem != null )
+        {
+            int curNumber = int.Parse(curItem.Number) - int.Parse(ItemNumberInput.text);
+
+            if(curNumber <= 0)
+            {
+                MyItemList.Remove(curItem);
+            }
+            else
+            {
+                curItem.Number = curNumber.ToString();
+            }
+            Save();
+        }
     }
 
     public void SlotClick(int slotNum)
