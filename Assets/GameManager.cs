@@ -4,6 +4,7 @@ using UnityEngine;
 using Newtonsoft.Json;
 using System.IO;
 using UnityEngine.UI;
+using Unity.VisualScripting;
 
 [System.Serializable]
 public class Item
@@ -88,6 +89,13 @@ public class GameManager : MonoBehaviour
             }
             Save();
         }
+    }
+
+    public void ResetItemClick()
+    {
+        Item BasicItem = AllItemList.Find(x => x.Name == "Pig");
+        MyItemList = new List<Item> { BasicItem };
+        Save();
     }
 
     public void SlotClick(int slotNum)
